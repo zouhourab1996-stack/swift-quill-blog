@@ -1,5 +1,5 @@
 import { useParams, Link } from "react-router-dom";
-import { getPostBySlug, getLatestPosts } from "@/data/posts";
+import { usePost, useLatestPosts } from "@/hooks/usePosts";
 import { Clock, Calendar, ArrowLeft, Share2 } from "lucide-react";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
@@ -7,11 +7,13 @@ import PostCard from "@/components/blog/PostCard";
 import AdPlaceholder from "@/components/blog/AdPlaceholder";
 import { ArticleJsonLd, BreadcrumbJsonLd } from "@/components/seo/JsonLd";
 import { useEffect } from "react";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const BlogPost = () => {
   const { slug } = useParams<{ slug: string }>();
-  const post = slug ? getPostBySlug(slug) : undefined;
-  const relatedPosts = getLatestPosts(3).filter(p => p.slug !== slug);
+  const { data: post, isLoading } = usePost(slug);
+  const { data: allPosts } = useLatestPosts(4);
+  const relatedPosts = allPosts.filter(p => p.slug !== slug).slice(0, 3);
 
   useEffect(() => {
     if (post) {
@@ -27,6 +29,23 @@ const BlogPost = () => {
     // Scroll to top on mount
     window.scrollTo(0, 0);
   }, [post]);
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-background">
+        <Header />
+        <main className="container mx-auto px-4 lg:px-8 py-16">
+          <div className="max-w-3xl mx-auto space-y-6">
+            <Skeleton className="h-8 w-48" />
+            <Skeleton className="h-12 w-full" />
+            <Skeleton className="h-6 w-3/4" />
+            <Skeleton className="aspect-[2/1] w-full rounded-xl" />
+          </div>
+        </main>
+        <Footer />
+      </div>
+    );
+  }
 
   if (!post) {
     return (
@@ -66,7 +85,7 @@ const BlogPost = () => {
       <BreadcrumbJsonLd
         items={[
           { name: "Home", url: baseUrl },
-          { name: post.category, url: `${baseUrl}/category/${post.category.toLowerCase().replace(/\s+/g, "-")}` },
+          { name: post.category, url: `${baseUrl}/category/${post.categorySlug}` },
           { name: post.title, url: postUrl },
         ]}
       />
@@ -89,7 +108,7 @@ const BlogPost = () => {
                   <li aria-hidden="true">/</li>
                   <li>
                     <Link 
-                      to={`/category/${post.category.toLowerCase().replace(/\s+/g, "-")}`}
+                      to={`/category/${post.categorySlug}`}
                       className="hover:text-foreground transition-colors"
                     >
                       {post.category}
@@ -195,18 +214,20 @@ const BlogPost = () => {
         </article>
 
         {/* Related Posts */}
-        <section className="py-12 md:py-16 bg-secondary/30 border-t border-border">
-          <div className="container mx-auto px-4 lg:px-8">
-            <h2 className="text-2xl font-bold tracking-tight text-foreground mb-8">
-              Continue Reading
-            </h2>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {relatedPosts.map((relatedPost) => (
-                <PostCard key={relatedPost.id} post={relatedPost} />
-              ))}
+        {relatedPosts.length > 0 && (
+          <section className="py-12 md:py-16 bg-secondary/30 border-t border-border">
+            <div className="container mx-auto px-4 lg:px-8">
+              <h2 className="text-2xl font-bold tracking-tight text-foreground mb-8">
+                Continue Reading
+              </h2>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                {relatedPosts.map((relatedPost) => (
+                  <PostCard key={relatedPost.id} post={relatedPost} />
+                ))}
+              </div>
             </div>
-          </div>
-        </section>
+          </section>
+        )}
       </main>
 
       <Footer />
@@ -226,6 +247,9 @@ function formatContent(content: string): string {
       if (line.startsWith("## ")) {
         return `<h2>${line.slice(3)}</h2>`;
       }
+      if (line.startsWith("# ")) {
+        return `<h2>${line.slice(2)}</h2>`;
+      }
       
       // Code blocks
       if (line.startsWith("```")) {
@@ -238,7 +262,7 @@ function formatContent(content: string): string {
       }
       
       // Lists
-      if (line.startsWith("- ")) {
+      if (line.startsWith("- ") || line.startsWith("* ")) {
         return `<li>${formatInline(line.slice(2))}</li>`;
       }
       if (/^\d+\.\s/.test(line)) {
@@ -259,6 +283,7 @@ function formatContent(content: string): string {
 function formatInline(text: string): string {
   return text
     .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
+    .replace(/\*(.+?)\*/g, "<em>$1</em>")
     .replace(/`(.+?)`/g, "<code>$1</code>");
 }
 
