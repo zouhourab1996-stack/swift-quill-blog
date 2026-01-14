@@ -3,10 +3,9 @@ import react from "@vitejs/plugin-react-swc";
 import path from "path";
 import { componentTagger } from "lovable-tagger";
 
-// https://vitejs.dev/config/
 export default defineConfig(({ mode }) => ({
-  // تم إضافة السطر التالي ليعمل الموقع على رابط GitHub المجاني بشكل صحيح
-  base: mode === 'production' ? './' : '/',
+  // استبدل 'swift-quill-blog' باسم مستودعك إذا كان مختلفاً
+  base: mode === 'production' ? '/swift-quill-blog/' : '/',
   
   server: {
     host: "::",
