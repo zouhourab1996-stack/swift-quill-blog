@@ -96,5 +96,5 @@ The ultimate success of this technology won't be measured by how many tasks it c
 <div style="padding: 20px; border: 2px solid #3b82f6; border-radius: 10px; background-color: #eff6ff; margin-top: 30px;">
     <h4 style="margin-top: 0;">💡 Recommended for You</h4>
     <p>If you enjoyed this analysis, check out more exclusive content on our partner blog:</p>
-    <a href="https://your-first-blog.com" style="color: #2563eb; font-weight: bold; text-decoration: underline;">Visit Our Main Blog &rarr;</a>
+    <a href="https://propheticguidance2026.blogspot.com/?m=1" style="color: #2563eb; font-weight: bold; text-decoration: underline;">Visit Our Main Blog &rarr;</a>
 </div>
