@@ -1,8 +1,41 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="https://agenticera.netlify.app/schemas/sitemap/0.9">
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" 
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+        xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
+
   <url>
     <loc>https://agenticera.netlify.app/</loc>
-    <lastmod>2026-01-14</lastmod>
-    <priority>1.0</priority>
+    <lastmod>2026-01-14T12:00:00+00:00</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>1.00</priority>
   </url>
+
+  <url>
+    <loc>https://agenticera.netlify.app/blog</loc>
+    <lastmod>2026-01-14T12:00:00+00:00</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.80</priority>
+  </url>
+
+  <url>
+    <loc>https://agenticera.netlify.app/the-2026-ai-agent-showdown-gpt-5-vs-gemini-vs-claude</loc>
+    <lastmod>2026-01-14T14:30:00+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.70</priority>
+  </url>
+
+  <url>
+    <loc>https://agenticera.netlify.app/my-ai-agent-made-10000-while-i-slept</loc>
+    <lastmod>2026-01-14T14:35:00+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.70</priority>
+  </url>
+
+  <url>
+    <loc>https://agenticera.netlify.app/the-dark-side-of-autonomy-ai-agents-digital-ecosystems</loc>
+    <lastmod>2026-01-14T14:40:00+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.70</priority>
+  </url>
+
 </urlset>
