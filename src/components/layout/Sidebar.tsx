@@ -1,19 +1,25 @@
 import { Link, useLocation } from "react-router-dom";
 import { categories } from "@/data/posts";
+import { usePosts } from "@/hooks/usePosts";
 import { cn } from "@/lib/utils";
-import { Cpu, Zap, Globe, Wrench } from "lucide-react";
+import { Bot, Zap, Globe } from "lucide-react";
 import AdPlaceholder from "@/components/blog/AdPlaceholder";
 
 const categoryIcons: Record<string, React.ElementType> = {
-  "ai-agents": Cpu,
+  "ai-agents": Bot,
   "automation-hacks": Zap,
   "global-tech-shifts": Globe,
-  "developer-tools": Wrench,
 };
 
 const Sidebar = () => {
   const location = useLocation();
   const currentPath = location.pathname;
+  const { data: posts = [] } = usePosts();
+
+  // Count posts per category
+  const getCategoryPostCount = (categorySlug: string) => {
+    return posts.filter(p => p.categorySlug === categorySlug).length;
+  };
 
   return (
     <aside className="w-full lg:w-72 shrink-0" aria-label="Sidebar navigation">
@@ -25,11 +31,12 @@ const Sidebar = () => {
         <nav aria-label="Category navigation">
           <ul className="space-y-1">
             {categories.map((category) => {
-              const Icon = categoryIcons[category.slug] || Cpu;
+              const Icon = categoryIcons[category.slug] || Bot;
               const isActive = currentPath === `/category/${category.slug}`;
+              const postCount = getCategoryPostCount(category.slug);
               
               return (
-                <li key={category.id}>
+                <li key={category.slug}>
                   <Link
                     to={`/category/${category.slug}`}
                     className={cn(
@@ -45,7 +52,7 @@ const Sidebar = () => {
                       "text-xs tabular-nums",
                       isActive ? "text-primary-foreground/80" : "text-muted-foreground"
                     )}>
-                      {category.postCount}
+                      {postCount}
                     </span>
                   </Link>
                 </li>

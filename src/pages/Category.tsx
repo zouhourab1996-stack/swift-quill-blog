@@ -1,5 +1,6 @@
 import { useParams, Link } from "react-router-dom";
-import { categories, getPostsByCategory } from "@/data/posts";
+import { categories } from "@/data/posts";
+import { usePostsByCategory } from "@/hooks/usePosts";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import Sidebar from "@/components/layout/Sidebar";
@@ -7,11 +8,12 @@ import PostCard from "@/components/blog/PostCard";
 import AdPlaceholder from "@/components/blog/AdPlaceholder";
 import { ArrowLeft } from "lucide-react";
 import { useEffect } from "react";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const Category = () => {
   const { slug } = useParams<{ slug: string }>();
   const category = categories.find((c) => c.slug === slug);
-  const posts = slug ? getPostsByCategory(slug) : [];
+  const { data: posts, isLoading } = usePostsByCategory(slug);
 
   useEffect(() => {
     if (category) {
@@ -69,7 +71,11 @@ const Category = () => {
               {category.description}
             </p>
             <div className="mt-4 text-sm text-muted-foreground">
-              {posts.length} article{posts.length !== 1 ? "s" : ""}
+              {isLoading ? (
+                <Skeleton className="h-4 w-20 inline-block" />
+              ) : (
+                <>{posts.length} article{posts.length !== 1 ? "s" : ""}</>
+              )}
             </div>
           </div>
         </section>
@@ -80,7 +86,20 @@ const Category = () => {
             <div className="flex flex-col lg:flex-row gap-12">
               {/* Main Content */}
               <div className="flex-1">
-                {posts.length > 0 ? (
+                {isLoading ? (
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    {[1, 2, 3, 4].map((i) => (
+                      <div key={i} className="bg-card rounded-lg overflow-hidden border border-border">
+                        <Skeleton className="aspect-[16/9] w-full" />
+                        <div className="p-5 space-y-3">
+                          <Skeleton className="h-4 w-24" />
+                          <Skeleton className="h-6 w-full" />
+                          <Skeleton className="h-4 w-3/4" />
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : posts.length > 0 ? (
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     {posts.map((post, index) => (
                       <div
